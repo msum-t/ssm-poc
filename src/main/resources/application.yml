@@ -1,0 +1,82 @@
+server:
+  port: 8083
+spring:
+  jackson:
+    default-property-inclusion: non_null
+  data:
+    mongodb:
+      #uri: mongodb://localhost:27017/ssm
+      uri: mongodb://18.143.168.108:27017/ssm
+      auto-index-creation: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+
+state-machine:
+  initial-state: Customer
+
+  states:
+    - Customer
+    - SalesReview
+    - RMReview
+    - DocumentReview
+    - Credit
+    - SDC
+    - WelcomeLetter
+  end-state: WelcomeLetter
+
+  events:
+    - CustomerEvent
+    - SalesReviewEvent
+    - RMReviewEvent
+    - DocumentReviewEvent
+    - CreditEvent
+    - SDCEvent
+    - WelcomeLetterEvent
+
+  transitions:
+    - source: Customer
+      target: SalesReview
+      event: SalesReviewEvent
+
+    - source: SalesReview
+      target: RMReview
+      event: RMReviewEvent
+
+    - source: RMReview
+      target: DocumentReview
+      event: DocumentReviewEvent
+
+    - source: DocumentReview
+      target: Credit
+      event: CreditEvent
+
+    - source: Credit
+      target: SDC
+      event: SDCEvent
+
+    - source: SDC
+      target: WelcomeLetter
+      event: WelcomeLetterEvent
+
+
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        statemachine: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
+  metrics:
+    export:
+      atlas:
+        enabled: false
+
+
+  server:
+    port: 8080
