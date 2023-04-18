@@ -17,11 +17,9 @@ public class SSMController {
 
     @PostMapping("/saveCustomer")
     public Mono<Customer> newCustomer(@RequestBody Customer customer) throws Exception {
-        return service.saveCustomer(customer)
-                .map(customer1 -> {
-                    service.createInitialState(customer1.getCustomerId());
-                    return customer1;
-                });
+        return service.createInitialState(customer);
+
+
     }
 
     @PostMapping("/{id}/salesEvent")

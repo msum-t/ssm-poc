@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.UUID;
+
 @Service
 public class SSMService {
 
@@ -31,25 +33,30 @@ public class SSMService {
     private CustomerRepo customerRepo;
 
 
-
     public Mono<Customer> saveCustomer(Customer customer) {
         return customerRepo.save(customer);
     }
 
 
-    public void createInitialState(String customerID) {
-        Mono<StateMachine<String, String>> stateMachineMono = Mono.fromCallable(() -> stateMachineFactory.getStateMachine(customerID)).subscribeOn(Schedulers.boundedElastic());
+    public Mono<Customer> createInitialState(Customer customer) {
+        Mono<StateMachine<String, String>> stateMachineMono = Mono.fromCallable(() ->
 
-        stateMachineMono.flatMap(sm->{
+                {
+                    UUID uuid = UUID.randomUUID();
+                    customer.setCustomerId(uuid.toString());
+                    return stateMachineFactory.getStateMachine(uuid);
+                }
+        ).subscribeOn(Schedulers.boundedElastic());
+
+        return stateMachineMono.flatMap(sm -> {
             try {
-                stateMachinePersister.persist(sm,customerID);
+                stateMachinePersister.persist(sm, customer.getCustomerId());
             } catch (Exception e) {
                 return Mono.error(e);
             }
             sm.stopReactively().subscribe();
-            return Mono.just(customerID);
-        }).subscribe();
-
+            return customerRepo.save(customer);
+        });
 
     }
 
@@ -75,6 +82,7 @@ public class SSMService {
         });
 
     }
+
     public Mono<Customer> getById(String customerId) {
         return customerRepo.findById(customerId);
     }

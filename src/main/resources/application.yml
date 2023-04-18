@@ -5,12 +5,11 @@ spring:
     default-property-inclusion: non_null
   data:
     mongodb:
-      #uri: mongodb://localhost:27017/ssm
-      uri: mongodb://13.229.183.251:27017/ssm
+      uri: mongodb://localhost:27017/ssm
       auto-index-creation: true
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
 
 state-machine:
