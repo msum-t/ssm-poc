@@ -6,7 +6,7 @@ spring:
   data:
     mongodb:
       #uri: mongodb://localhost:27017/ssm
-      uri: mongodb://18.143.168.108:27017/ssm
+      uri: mongodb://13.229.183.251:27017/ssm
       auto-index-creation: true
   autoconfigure:
     exclude:
@@ -25,15 +25,6 @@ state-machine:
     - SDC
     - WelcomeLetter
   end-state: WelcomeLetter
-
-  events:
-    - CustomerEvent
-    - SalesReviewEvent
-    - RMReviewEvent
-    - DocumentReviewEvent
-    - CreditEvent
-    - SDCEvent
-    - WelcomeLetterEvent
 
   transitions:
     - source: Customer

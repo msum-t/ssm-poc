@@ -5,14 +5,18 @@ import com.ssm.demo.entity.Customer;
 import com.ssm.demo.repo.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.StateMachinePersist;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class SSMService {
 
-
+    @Autowired
+    private StateMachinePersist<String, String, String> stateMachinePersist;
 
 
     @Autowired
@@ -26,33 +30,54 @@ public class SSMService {
     @Autowired
     private CustomerRepo customerRepo;
 
-    public Customer saveCustomer(Customer customer){
-        return   customerRepo.save(customer);
+
+
+    public Mono<Customer> saveCustomer(Customer customer) {
+        return customerRepo.save(customer);
     }
 
 
-    public String createIntialState(String customerID) throws Exception {
-        StateMachine<String, String> stateMachine = stateMachineFactory.getStateMachine(customerID);
-        stateMachinePersister.persist(stateMachine,customerID);
-       // stateMachines.put(ssContext.getId(),stateMachine);
-        stateMachine.stopReactively();
-        return customerID;
+    public void createInitialState(String customerID) {
+        Mono<StateMachine<String, String>> stateMachineMono = Mono.fromCallable(() -> stateMachineFactory.getStateMachine(customerID)).subscribeOn(Schedulers.boundedElastic());
+
+        stateMachineMono.flatMap(sm->{
+            try {
+                stateMachinePersister.persist(sm,customerID);
+            } catch (Exception e) {
+                return Mono.error(e);
+            }
+            sm.stopReactively().subscribe();
+            return Mono.just(customerID);
+        }).subscribe();
+
 
     }
 
 
-    public boolean updateStates(String cId, String events) throws Exception {
+    public Mono<Boolean> updateStates(String cId, String events) {
+        Mono<StateMachine<String, String>> stateMachineMono = Mono.fromCallable(() -> stateMachinePersister.restore(stateMachineFactory.getStateMachine(cId), cId)).subscribeOn(Schedulers.boundedElastic());
 
-        StateMachine<String, String> stateMachine = stateMachinePersister.restore(stateMachineFactory.getStateMachine(cId), cId);
-        boolean event = stateMachine.sendEvent(events);
-        stateMachinePersister.persist(stateMachine,cId);
-        stateMachine.stopReactively();
-       return event;
+
+        return stateMachineMono.flatMap(stateMachine -> {
+            stateMachine.startReactively().subscribe();
+            boolean event = stateMachine.sendEvent(events);
+            stateMachine.stopReactively().subscribe();
+            if (event) {
+                try {
+                    stateMachinePersister.persist(stateMachine, cId);
+                    return Mono.just(true);
+                } catch (Exception e) {
+                    return Mono.error(e);
+                }
+            } else {
+                return Mono.just(false);
+            }
+        });
 
     }
-
-    public Customer getById(String customerId){
-        return customerRepo.findById(customerId).get();
+    public Mono<Customer> getById(String customerId) {
+        return customerRepo.findById(customerId);
     }
+
 
 }

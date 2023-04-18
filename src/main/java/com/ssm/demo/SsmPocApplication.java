@@ -6,10 +6,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import reactor.blockhound.BlockHound;
+import reactor.core.scheduler.ReactorBlockHoundIntegration;
+
+import java.util.Locale;
 
 @SpringBootApplication
 @EnableAutoConfiguration
 public class SsmPocApplication implements CommandLineRunner {
+
 
 
 	@Autowired
@@ -17,6 +22,8 @@ public class SsmPocApplication implements CommandLineRunner {
 
 
 	public static void main(String[] args) {
+		//BlockHound.install();
+
 		SpringApplication.run(SsmPocApplication.class, args);
 	}
 
@@ -30,3 +37,4 @@ public class SsmPocApplication implements CommandLineRunner {
 
 	}
 }
+

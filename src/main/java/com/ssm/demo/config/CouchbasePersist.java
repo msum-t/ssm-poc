@@ -1,13 +1,7 @@
 package com.ssm.demo.config;
 
-import com.ssm.demo.entity.StateMachineCouchbaseEntity;
-import com.ssm.demo.repo.JpaRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.statemachine.StateMachineContext;
-import org.springframework.statemachine.StateMachinePersist;
-import org.springframework.statemachine.service.StateMachineSerialisationService;
 
-
+/*
 //@Component
 public class CouchbasePersist implements StateMachinePersist<String, String, String> {
 
@@ -15,10 +9,10 @@ public class CouchbasePersist implements StateMachinePersist<String, String, Str
     StateMachineSerialisationService<String, String> service;
 
 
-    @Autowired
-    StringToByteArrayConverter stringToByteArrayConverter;
-    @Autowired
-    ByteArrayToStringConverter byteArrayToStringConverter;
+//    @Autowired
+//    StringToByteArrayConverter stringToByteArrayConverter;
+//    @Autowired
+//    ByteArrayToStringConverter byteArrayToStringConverter;
 
 
     @Autowired
@@ -45,3 +39,4 @@ public class CouchbasePersist implements StateMachinePersist<String, String, Str
 
     }
 }
+*/
