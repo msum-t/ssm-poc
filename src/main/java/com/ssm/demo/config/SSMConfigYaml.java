@@ -46,7 +46,7 @@ public class SSMConfigYaml extends StateMachineConfigurerAdapter<String, String>
                 config
                 .withConfiguration()
                 .autoStartup(true)
-                        .listener( listener())
+                        //.listener( listener())
 //                        .and()
 //                        .withMonitoring()
 //                        .monitor(stateMachineMonitor());
@@ -72,18 +72,18 @@ public class SSMConfigYaml extends StateMachineConfigurerAdapter<String, String>
                     .source(transition.getSource())
                     .target(transition.getTarget())
                     .event(transition.getEvent())
-                    .action(c->System.out.println(c.getEvent()))
+
             ;
         }
     }
 
 
 
-    @Bean
+
     public StateMachineMonitor<String, String> stateMachineMonitor() {
         return new SSMMonitoring(meterRegistry);
     }
-    @Bean
+
     public StateMachineListenerAdapter<String, String> listener() {
         return new StateMachineListenerAdapter<String, String>() {
             @Override
@@ -121,7 +121,7 @@ public class SSMConfigYaml extends StateMachineConfigurerAdapter<String, String>
         return new KryoStateMachineSerialisationService<>();
     }
 
-    @Bean
+
     public StateMachineListener<String, String> loggingStateListener() {
         return new StateMachineListenerAdapter<String,String>(){
 

@@ -5,6 +5,7 @@ import com.ssm.demo.entity.Customer;
 import com.ssm.demo.service.SSMService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -17,6 +18,9 @@ public class SSMController {
 
     @PostMapping("/saveCustomer")
     public Mono<Customer> newCustomer(@RequestBody Customer customer) throws Exception {
+
+
+
         return service.createInitialState(customer);
 
 

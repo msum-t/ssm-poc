@@ -1,11 +1,19 @@
 server:
-  port: 8083
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:springbootssm.p12
+    key-store-password: password
+    key-store-type: pkcs12
+    key-alias: springbootssm
+    key-password: password
+
 spring:
   jackson:
     default-property-inclusion: non_null
   data:
     mongodb:
-      uri: mongodb://localhost:27017/ssm
+      uri: mongodb://52.77.214.71:27017/ssm
       auto-index-creation: true
 #  autoconfigure:
 #    exclude:
@@ -66,7 +74,3 @@ management:
     export:
       atlas:
         enabled: false
-
-
-  server:
-    port: 8080

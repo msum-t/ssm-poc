@@ -2,7 +2,6 @@ package com.ssm.demo.repo;
 
 import com.ssm.demo.entity.StateMachineCouchbaseEntity;
 import org.springframework.statemachine.data.StateMachineRepository;
-import org.springframework.statemachine.data.jpa.JpaStateMachineRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
