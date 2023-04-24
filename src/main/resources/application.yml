@@ -13,7 +13,7 @@ spring:
     default-property-inclusion: non_null
   data:
     mongodb:
-      uri:
+      uri: 
       auto-index-creation: true
 #  autoconfigure:
 #    exclude:

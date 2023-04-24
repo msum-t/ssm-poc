@@ -1,31 +1,22 @@
 package com.ssm.demo.service;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssm.demo.config.SSMYamlProperty;
 import com.ssm.demo.entity.Customer;
 import com.ssm.demo.repo.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.StateMachinePersist;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.stereotype.Service;
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 public class SSMService {
@@ -96,17 +87,16 @@ public class SSMService {
 
         return stateMachineMono.flatMap(stateMachine -> {
             stateMachine.startReactively().subscribe();
-            boolean event = stateMachine.sendEvent(events);
+            Message<String> event =
+                    MessageBuilder.withPayload(events)
+                            .build();
+            stateMachine.sendEvent(Mono.just(event));
             stateMachine.stopReactively().subscribe();
-            if (event) {
-                try {
-                    stateMachinePersister.persist(stateMachine, cId);
-                    return Mono.just(true);
-                } catch (Exception e) {
-                    return Mono.error(e);
-                }
-            } else {
-                return Mono.just(false);
+            try {
+                stateMachinePersister.persist(stateMachine, cId);
+                return Mono.just(true);
+            } catch (Exception e) {
+                return Mono.error(e);
             }
         });
 
