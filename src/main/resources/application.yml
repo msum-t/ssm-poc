@@ -2,10 +2,10 @@ server:
   port: 8443
   ssl:
     enabled: true
-    key-store: classpath:springbootssm.p12
+    key-store: classpath:statemachineserver.p12
     key-store-password: password
     key-store-type: pkcs12
-    key-alias: springbootssm
+    key-alias: statemachineserver
     key-password: password
 
 spring:
