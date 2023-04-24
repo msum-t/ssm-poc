@@ -1,24 +1,30 @@
 package com.ssm.demo.config;
 
 import com.ssm.demo.entity.Transition;
+import com.ssm.demo.repo.JpaRepo;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.boot.StateMachineProperties;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineConfigurationConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
+import org.springframework.statemachine.data.jpa.JpaPersistingStateMachineInterceptor;
+import org.springframework.statemachine.data.jpa.JpaStateMachineRepository;
 import org.springframework.statemachine.data.mongodb.MongoDbPersistingStateMachineInterceptor;
 import org.springframework.statemachine.data.mongodb.MongoDbStateMachineRepository;
 import org.springframework.statemachine.kryo.KryoStateMachineSerialisationService;
+import org.springframework.statemachine.listener.CompositeStateMachineListener;
 import org.springframework.statemachine.listener.StateMachineListener;
 import org.springframework.statemachine.listener.StateMachineListenerAdapter;
 import org.springframework.statemachine.monitor.StateMachineMonitor;
+import org.springframework.statemachine.persist.DefaultStateMachinePersister;
+import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.statemachine.persist.StateMachineRuntimePersister;
 import org.springframework.statemachine.service.StateMachineSerialisationService;
 import org.springframework.statemachine.state.State;
@@ -34,8 +40,7 @@ public class SSMConfigYaml extends StateMachineConfigurerAdapter<String, String>
     private SSMYamlProperty yamlConfiguration;
 
     @Autowired
-    private MongoTemplate template;
-
+    private JpaRepo jpaRepo;
 
     @Autowired
     private MeterRegistry meterRegistry;
@@ -72,18 +77,17 @@ public class SSMConfigYaml extends StateMachineConfigurerAdapter<String, String>
                     .source(transition.getSource())
                     .target(transition.getTarget())
                     .event(transition.getEvent())
-
             ;
         }
     }
 
 
 
-
+    @Bean
     public StateMachineMonitor<String, String> stateMachineMonitor() {
         return new SSMMonitoring(meterRegistry);
     }
-
+    @Bean
     public StateMachineListenerAdapter<String, String> listener() {
         return new StateMachineListenerAdapter<String, String>() {
             @Override
@@ -107,7 +111,6 @@ public class SSMConfigYaml extends StateMachineConfigurerAdapter<String, String>
         return new MongoDbPersistingStateMachineInterceptor<>(jpaStateMachineRepository);
     }
 
-
 //    @Bean
 //    public StateMachinePersister<String, String, String> stateMachineCouchbasePersister(
 //            CouchbasePersist jpaStateMachineRepository) {
@@ -121,7 +124,7 @@ public class SSMConfigYaml extends StateMachineConfigurerAdapter<String, String>
         return new KryoStateMachineSerialisationService<>();
     }
 
-
+    @Bean
     public StateMachineListener<String, String> loggingStateListener() {
         return new StateMachineListenerAdapter<String,String>(){
 

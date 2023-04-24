@@ -27,41 +27,23 @@
 			<artifactId>spring-statemachine-data-mongodb</artifactId>
 			<version>${spring-statemachine.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.projectreactor.tools</groupId>
-			<artifactId>blockhound</artifactId>
-			<version>1.0.8.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver-reactivestreams</artifactId>
+			<artifactId>mongodb-driver-sync</artifactId>
 			<version>4.6.1</version>
-
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.statemachine</groupId>
 			<artifactId>spring-statemachine-starter</artifactId>
 		</dependency>
 
-
-
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.statemachine</groupId>-->
-<!--			<artifactId>spring-statemachine-data-jpa</artifactId>-->
-<!--		</dependency>-->
 		<dependency>
-			<groupId>io.projectreactor</groupId>
-			<artifactId>reactor-test</artifactId>
-			<scope>test</scope>
+			<groupId>org.springframework.statemachine</groupId>
+			<artifactId>spring-statemachine-data-jpa</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -74,11 +56,7 @@
 <!--			<artifactId>java-client</artifactId>-->
 <!--			<version>3.4.4</version>-->
 <!--		</dependency>-->
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver-sync</artifactId>
-			<version>4.6.1</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

@@ -1,25 +1,20 @@
 server:
   port: 8443
-  ssl:
-    enabled: true
-    key-store: classpath:springbootssm.p12
-    key-store-password: password
-    key-store-type: pkcs12
-    key-alias: springbootssm
-    key-password: password
+#  ssl:
+#    enabled: true
+#    key-store: classpath:springbootssm.p12
+#    key-store-password: password
+#    key-store-type: pkcs12
+#    key-alias: springbootssm
+#    key-password: password
 
 spring:
   jackson:
     default-property-inclusion: non_null
   data:
     mongodb:
-      uri:
+      uri: 
       auto-index-creation: true
-#  autoconfigure:
-#    exclude:
-#      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-
-
 state-machine:
   initial-state: Customer
 
@@ -32,6 +27,15 @@ state-machine:
     - SDC
     - WelcomeLetter
   end-state: WelcomeLetter
+
+  events:
+    - CustomerEvent
+    - SalesReviewEvent
+    - RMReviewEvent
+    - DocumentReviewEvent
+    - CreditEvent
+    - SDCEvent
+    - WelcomeLetterEvent
 
   transitions:
     - source: Customer
@@ -74,3 +78,7 @@ management:
     export:
       atlas:
         enabled: false
+
+
+  server:
+    port: 8080

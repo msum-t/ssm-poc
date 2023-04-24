@@ -2,11 +2,12 @@ package com.ssm.demo.controller;
 
 
 import com.ssm.demo.entity.Customer;
+import com.ssm.demo.entity.StateMachineContextEntity;
 import com.ssm.demo.service.SSMService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/ssm-yaml")
@@ -17,95 +18,68 @@ public class SSMController {
 
 
     @PostMapping("/saveCustomer")
-    public Mono<Customer> newCustomer(@RequestBody Customer customer) throws Exception {
-
-
-
-        return service.createInitialState(customer);
-
-
+    public Customer newCustomer(@RequestBody Customer customer) throws Exception {
+        Customer customer1 = service.saveCustomer(customer);
+        service.createIntialState(customer1.getCustomerId());
+        return customer1;
     }
 
     @PostMapping("/{id}/salesEvent")
-    public Mono<Customer> salesEvent(@PathVariable String id, @RequestBody Customer customer) throws Exception {
-        Mono<Boolean> updateState = service.updateStates(id, "SalesReviewEvent");
-
-        return updateState.flatMap(bool -> {
-            if (bool) {
-                customer.setSalesStatus("Completed");
-                return service.saveCustomer(customer);
-            } else
-                return service.getById(id);
-
-        });
-
+    public Customer salesEvent(@PathVariable String id,@RequestBody Customer customer) throws Exception {
+        boolean updateState = service.updateStates(id, "SalesReviewEvent");
+        if (updateState){
+            customer.setSalesStatus("Completed");
+            return service.saveCustomer(customer);
+        }
+        return service.getById(id);
     }
 
     @PostMapping("/{id}/rmEvent")
-    public Mono<Customer> rmEvent(@PathVariable String id, @RequestBody Customer customer) throws Exception {
-        Mono<Boolean> updateState = service.updateStates(id, "RMReviewEvent");
-        return updateState.flatMap(bool -> {
-            if (bool) {
-                customer.setRmStatus("Completed");
-                return service.saveCustomer(customer);
-            } else
-                return service.getById(id);
-
-        });
+    public Customer rmEvent(@PathVariable String id,@RequestBody Customer customer) throws Exception {
+        boolean updateState = service.updateStates(id,"RMReviewEvent");
+        if (updateState){
+            customer.setRmStatus("Completed");
+            return service.saveCustomer(customer);
+        }
+        return service.getById(id);
     }
-
     @PostMapping("/{id}/docEvent")
-    public Mono<Customer> docEvent(@PathVariable String id, @RequestBody Customer customer) throws Exception {
-        Mono<Boolean> updateState = service.updateStates(id, "DocumentReviewEvent");
-        return updateState.flatMap(bool -> {
-            if (bool) {
-                customer.setDocStatus("Completed");
-                return service.saveCustomer(customer);
-            } else
-                return service.getById(id);
-
-        });
+    public Customer docEvent(@PathVariable String id,@RequestBody Customer customer) throws Exception {
+        boolean updateState = service.updateStates(id, "DocumentReviewEvent");
+        if (updateState){
+            customer.setDocStatus("Completed");
+            return service.saveCustomer(customer);
+        }
+        return service.getById(id);
     }
-
     @PostMapping("/{id}/creditEvent")
-    public Mono<Customer> creditEvent(@PathVariable String id, @RequestBody Customer customer) throws Exception {
-        Mono<Boolean> updateState = service.updateStates(id, "CreditEvent");
-        return updateState.flatMap(bool -> {
-            if (bool) {
-                customer.setCreditStatus("Completed");
-                return service.saveCustomer(customer);
-            } else
-                return service.getById(id);
-
-        });
+    public Customer creditEvent(@PathVariable String id,@RequestBody Customer customer) throws Exception {
+        boolean updateState = service.updateStates(id, "CreditEvent");
+        if (updateState){
+            customer.setCreditStatus("Completed");
+            return service.saveCustomer(customer);
+        }
+        return service.getById(id);
     }
-
     @PostMapping("/{id}/sdcEvent")
-    public Mono<Customer> sdcEvent(@PathVariable String id, @RequestBody Customer customer) throws Exception {
-        Mono<Boolean> updateState = service.updateStates(id, "SDCEvent");
-        return updateState.flatMap(bool -> {
-            if (bool) {
-                customer.setSdcStatus("Completed");
-                return service.saveCustomer(customer);
-            } else
-                return service.getById(id);
-
-        });
+    public Customer sdcEvent(@PathVariable String id,@RequestBody Customer customer) throws Exception {
+        boolean updateState = service.updateStates(id, "SDCEvent");
+        if (updateState){
+            customer.setSdcStatus("Completed");
+            return service.saveCustomer(customer);
+        }
+        return service.getById(id);
 
     }
 
     @PostMapping("/{id}/welcome")
-    public Mono<Customer> welcome(@PathVariable String id, @RequestBody Customer customer) throws Exception {
-        Mono<Boolean> updateState = service.updateStates(id, "WelcomeLetterEvent");
-        return updateState.flatMap(bool -> {
-            if (bool) {
-                customer.setWelcomeStatus("Completed");
-                return service.saveCustomer(customer);
-            } else
-                return service.getById(id);
-
-        });
+    public Customer welcome(@PathVariable String id,@RequestBody Customer customer) throws Exception {
+        boolean updateState = service.updateStates(id, "WelcomeLetterEvent");
+        if (updateState){
+            customer.setWelcomeStatus("Completed");
+            return service.saveCustomer(customer);
+        }
+        return service.getById(id);
     }
-
 
 }
